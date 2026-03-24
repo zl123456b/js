@@ -277,8 +277,10 @@
 
 <!-- 答案弹窗 -->
 <div id="answer-modal" class="modal">
-    <div class="modal-content">
-        <img src="" alt="答案" class="modal-image" id="modal-image">
+    <div class="modal-content" id="modal-content">
+        <img src="" alt="答案1" class="modal-image" id="modal-image">
+        <br>
+        <img src="" alt="答案2" class="modal-image2" id="modal-image2">
         <br>
         <button class="close-btn" onclick="closeModal()">关闭</button>
     </div>
@@ -300,7 +302,13 @@
                 'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3867737.png',
                 'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3995b14.png',
                 'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3a30bcd.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3acf3eb.png']
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3acf3eb.png'],
+            images2: ["https://free-img.mofashi.ltd/5/2026/03/24/69c24d8373b34.png",
+                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d8556978.png",
+                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d844919a.png",
+                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d83d2c2c.png",
+                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d84daa75.png"
+            ]
         }
     };
 
@@ -350,7 +358,13 @@
 
         const config = groupConfig[group];
         const randomIndex = Math.floor(Math.random() * config.numbers.length);
-        currentResult = {
+        if (group === 'primary2') {
+            currentResult = {
+                number: config.numbers[randomIndex],
+                image: config.images[randomIndex],
+                image2: config.images2[randomIndex]
+            };
+        } else currentResult = {
             number: config.numbers[randomIndex],
             image: config.images[randomIndex]
         };
@@ -374,8 +388,34 @@
         }
 
 
-        const modalImage = document.getElementById('modal-image');
-        modalImage.src = currentResult.image;
+        //const modalImage = document.getElementById('modal-image');
+        //modalImage.src = currentResult.image;
+        //if (group === 'primary2') {
+        //const modalImage = document.getElementById('modal-image2');
+        //modalImage.src = currentResult.image2;
+        //}
+        const answersContainer = document.getElementById('modal-content');
+
+        if (group === 'primary2') {
+            let html = '';
+            html += `
+        <img src="${currentResult.image}" alt="答案1" class="modal-image" id="modal-image">
+        <br>
+        <img src="${currentResult.image2}" alt="答案2" class="modal-image2" id="modal-image2">
+        <br>
+        <button class="close-btn" onclick="closeModal()">关闭</button>
+            `;
+            answersContainer.innerHTML = html;
+        } else {
+            let html = '';
+            html += `
+        <img src="${currentResult.image}" alt="答案1" class="modal-image" id="modal-image">
+        <br>
+        <button class="close-btn" onclick="closeModal()">关闭</button>
+            `;
+            answersContainer.innerHTML = html;
+        }
+
 
         const modal = document.getElementById('answer-modal');
         modal.style.display = 'flex';
