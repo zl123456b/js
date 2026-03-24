@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预警器数字随机抽取</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        /* 首页按钮样式 */
+        .group-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            font-size: 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 80%;
+            max-width: 300px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 16px;
+        }
+
+        /* 抽奖页面样式 */
+        .dice-container {
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .dice {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .dice:hover {
+            transform: scale(1.05);
+        }
+
+        .dice:active {
+            transform: scale(0.95);
+        }
+
+        .dice-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .answer-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            max-height: 90%;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        /* 结果展示 */
+        .result {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        /* 页面切换控制 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 手机竖屏适配 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .btn {
+                padding: 15px 30px;
+                font-size: 18px;
+            }
+
+            .dice {
+                width: 150px;
+                height: 150px;
+            }
+
+            .result {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 首页 -->
+    <div id="home-page" class="page active">
+        <h1>预警器数字随机抽取</h1>
+        <div class="group-buttons">
+            <button class="btn btn-primary" onclick="selectGroup('primary1')">小学 1 组</button>
+            <button class="btn btn-secondary" onclick="selectGroup('primary2')">小学 2 组及初中组</button>
+        </div>
+    </div>
+
+    <!-- 小学 1 组页面 -->
+    <div id="primary1-page" class="page">
+        <h1>小学 1 组</h1>
+        <h2 style="color: chartreuse">点击下方好运图片抽取数字</h2>
+        <div class="dice-container">
+            <div class="dice" onclick="rollDice('primary1')">
+                <img src="https://free-img.mofashi.ltd/5/2026/03/24/69c20a58e57f1.gif" alt="点击我抽取数字"
+                     class="dice-image"
+                     id="primary1-dice">
+            </div>
+        </div>
+        <div class="result" id="primary1-result"></div>
+        <button class="answer-btn" onclick="showAnswer('primary1')">点击查看参考答案</button>
+        <button class="btn btn-back" onclick="goBack()">返回</button>
+    </div>
+
+    <!-- 小学 2 组及初中组页面 -->
+    <div id="primary2-page" class="page">
+        <h1>小学 2 组及初中组</h1>
+        <h2 style="color: chartreuse">点击下方好运图片抽取数字</h2>
+        <div class="dice-container">
+            <div class="dice" onclick="rollDice('primary2')">
+                <img src="https://free-img.mofashi.ltd/5/2026/03/24/69c20a58e57f1.gif" alt="点击我抽取数字"
+                     class="dice-image"
+                     id="primary2-dice">
+            </div>
+        </div>
+        <div class="result" id="primary2-result"></div>
+        <button class="answer-btn" onclick="showAnswer('primary2')">点击查看参考答案</button>
+        <button class="btn btn-back" onclick="goBack()">返回</button>
+    </div>
+</div>
+
+<!-- 答案弹窗 -->
+<div id="answer-modal" class="modal">
+    <div class="modal-content">
+        <img src="" alt="答案" class="modal-image" id="modal-image">
+        <br>
+        <button class="close-btn" onclick="closeModal()">关闭</button>
+    </div>
+</div>
+
+<script>
+    // 定义各组的数字范围
+    const groupConfig = {
+        'primary1': {
+            numbers: [6, 7, 8, 9],
+            images: ['https://free-img.mofashi.ltd/5/2026/03/24/69c1ff34b5da6.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff354ab01.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3657e46.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff36df957.png']
+        },
+        'primary2': {
+            numbers: [10, 11, 12, 13, 14],
+            images: ['https://free-img.mofashi.ltd/5/2026/03/24/69c1ff37eb906.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3867737.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3995b14.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3a30bcd.png',
+                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3acf3eb.png']
+        }
+    };
+
+    // 当前选中的组和结果
+    let currentGroup = null;
+    let currentResult = null;
+
+    // 选择组别
+    function selectGroup(group) {
+        console.log('选择的组别:', group);
+
+        // 隐藏所有页面
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+
+        // 显示对应页面
+        const targetPage = document.getElementById(`${group}-page`);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            console.log('显示的页面:', targetPage.id);
+        } else {
+            console.error('找不到页面:', `${group}-page`);
+        }
+
+        // 重置结果
+        const resultElement = document.getElementById(`${group}-result`);
+        if (resultElement) {
+            resultElement.textContent = '';
+        }
+        currentResult = null;
+    }
+
+    // 返回主页
+    function goBack() {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        document.getElementById('home-page').classList.add('active');
+        currentGroup = null;
+        currentResult = null;
+    }
+
+    // 随机抽取
+    function rollDice(group) {
+        if (!group) return;
+
+        const config = groupConfig[group];
+        const randomIndex = Math.floor(Math.random() * config.numbers.length);
+        currentResult = {
+            number: config.numbers[randomIndex],
+            image: config.images[randomIndex]
+        };
+
+        // 显示结果
+        document.getElementById(`${group}-result`).textContent = currentResult.number;
+
+        // 添加动画效果
+        const diceElement = document.getElementById(`${group}-dice`);
+        diceElement.style.animation = 'none';
+        setTimeout(() => {
+            diceElement.style.animation = 'shake 0.5s ease';
+        }, 10);
+    }
+
+    // 查看答案
+    function showAnswer(group) {
+        if (!currentResult) {
+            alert('请先点击好运图片抽取数字！');
+            return;
+        }
+
+
+        const modalImage = document.getElementById('modal-image');
+        modalImage.src = currentResult.image;
+
+        const modal = document.getElementById('answer-modal');
+        modal.style.display = 'flex';
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        document.getElementById('answer-modal').style.display = 'none';
+    }
+
+    // 点击弹窗外部关闭
+    window.onclick = function (event) {
+        const modal = document.getElementById('answer-modal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    // 添加骰子摇动动画
+    const style = document.createElement('style');
+    style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: rotate(0deg); }
+                25% { transform: rotate(-10deg); }
+                50% { transform: rotate(0deg); }
+                75% { transform: rotate(10deg); }
+            }
+        `;
+    document.head.appendChild(style);
+</script>
+</body>
+</html>
