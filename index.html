@@ -280,7 +280,7 @@
     <div class="modal-content" id="modal-content">
         <img src="" alt="答案1" class="modal-image" id="modal-image">
         <br>
-        <img src="" alt="答案2" class="modal-image2" id="modal-image2">
+        <img src="" alt="答案2" class="modal-image" id="modal-image2">
         <br>
         <button class="close-btn" onclick="closeModal()">关闭</button>
     </div>
@@ -291,23 +291,27 @@
     const groupConfig = {
         'primary1': {
             numbers: [6, 7, 8, 9],
-            images: ['https://free-img.mofashi.ltd/5/2026/03/24/69c1ff34b5da6.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff354ab01.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3657e46.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff36df957.png']
+            images: ['https://free-img.mofashi.ltd/5/2026/03/26/69c49f5686b2f.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f4ec4b9d.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f4f64a14.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f4fdfc63.png'],
+            images2: ['https://free-img.mofashi.ltd/5/2026/03/26/69c49f5179eec.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f526b580.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f531ef00.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f55151d5.png']
         },
         'primary2': {
             numbers: [10, 11, 12, 13, 14],
-            images: ['https://free-img.mofashi.ltd/5/2026/03/24/69c1ff37eb906.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3867737.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3995b14.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3a30bcd.png',
-                'https://free-img.mofashi.ltd/5/2026/03/24/69c1ff3acf3eb.png'],
-            images2: ["https://free-img.mofashi.ltd/5/2026/03/24/69c24d8373b34.png",
-                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d8556978.png",
-                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d844919a.png",
-                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d83d2c2c.png",
-                "https://free-img.mofashi.ltd/5/2026/03/24/69c24d84daa75.png"
+            images: ['https://free-img.mofashi.ltd/5/2026/03/26/69c49f5623171.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f5707ced.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f578656a.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f588bf4b.png',
+                'https://free-img.mofashi.ltd/5/2026/03/26/69c49f5917361.png'],
+            images2: ["https://free-img.mofashi.ltd/5/2026/03/26/69c49f59a5f4f.png",
+                "https://free-img.mofashi.ltd/5/2026/03/26/69c49f5aaa140.png",
+                "https://free-img.mofashi.ltd/5/2026/03/26/69c49f510a8b2.png",
+                "https://free-img.mofashi.ltd/5/2026/03/26/69c49f5b2b481.png",
+                "https://free-img.mofashi.ltd/5/2026/03/26/69c49f5364902.png"
             ]
         }
     };
@@ -358,15 +362,10 @@
 
         const config = groupConfig[group];
         const randomIndex = Math.floor(Math.random() * config.numbers.length);
-        if (group === 'primary2') {
-            currentResult = {
-                number: config.numbers[randomIndex],
-                image: config.images[randomIndex],
-                image2: config.images2[randomIndex]
-            };
-        } else currentResult = {
+        currentResult = {
             number: config.numbers[randomIndex],
-            image: config.images[randomIndex]
+            image: config.images[randomIndex],
+            image2: config.images2[randomIndex]
         };
 
         // 显示结果
@@ -386,37 +385,10 @@
             alert('请先点击好运图片抽取数字！');
             return;
         }
-
-
-        //const modalImage = document.getElementById('modal-image');
-        //modalImage.src = currentResult.image;
-        //if (group === 'primary2') {
-        //const modalImage = document.getElementById('modal-image2');
-        //modalImage.src = currentResult.image2;
-        //}
-        const answersContainer = document.getElementById('modal-content');
-
-        if (group === 'primary2') {
-            let html = '';
-            html += `
-        <img src="${currentResult.image}" alt="答案1" class="modal-image" id="modal-image">
-        <br>
-        <img src="${currentResult.image2}" alt="答案2" class="modal-image" id="modal-image">
-        <br>
-        <button class="close-btn" onclick="closeModal()">关闭</button>
-            `;
-            answersContainer.innerHTML = html;
-        } else {
-            let html = '';
-            html += `
-        <img src="${currentResult.image}" alt="答案1" class="modal-image" id="modal-image">
-        <br>
-        <button class="close-btn" onclick="closeModal()">关闭</button>
-            `;
-            answersContainer.innerHTML = html;
-        }
-
-
+        const modalImage = document.getElementById('modal-image');
+        const modalImage2 = document.getElementById('modal-image2');
+        modalImage.src = currentResult.image;
+        modalImage2.src = currentResult.image2;
         const modal = document.getElementById('answer-modal');
         modal.style.display = 'flex';
     }
